@@ -1,270 +1,227 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>🛎️ Room Service - Hostería Atahualpa Yupanqui</title>
-  
+
   <!-- FUENTES DE LUXE: Playfair Display para títulos, Outfit para cuerpo -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<!-- PANTALLA DE CARGA / SPLASH SCREEN CINEMATOGRÁFICO -->
-<div id="splash">
-  <div class="sp-content">
-    <div class="sp-logo-container">
-      <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa Yupanqui" class="sp-logo">
-      <div class="sp-light-flare"></div>
-    </div>
-    <div class="sp-hotel-name">Hostería Atahualpa Yupanqui</div>
-    <div class="sp-tagline">SERVICIO DE HABITACIÓN DIGITAL</div>
-    <div class="sp-loader">
-      <div class="sp-loader-inner"></div>
+  <!-- PANTALLA DE CARGA / SPLASH SCREEN CINEMATOGRÁFICO -->
+  <div id="splash">
+    <div class="sp-content">
+      <div class="sp-logo-container">
+        <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa Yupanqui" class="sp-logo">
+        <div class="sp-light-flare"></div>
+      </div>
+      <div class="sp-hotel-name">Hostería Atahualpa Yupanqui</div>
+      <div class="sp-tagline">SERVICIO DE HABITACIÓN DIGITAL</div>
+      <div class="sp-loader">
+        <div class="sp-loader-inner"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- CONTENEDOR PRINCIPAL DE LA APLICACIÓN -->
-<div id="app">
+  <!-- CONTENEDOR PRINCIPAL DE LA APLICACIÓN -->
+  <div id="app">
 
-  <!-- NAVBAR SUPERIOR GLASSMORPHIC -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand-block">
-        <img src="img/logo/logoHosteriaok.png" alt="Logo Hostería" class="header-mini-logo">
-        <div class="brand-info">
-          <div class="brand-greeting" id="storeStatusGreeting">
-            <span class="status-indicator-dot open"></span>
-            <span id="storeStatusText">Servicio Disponible · Cocina Abierta</span>
+    <!-- NAVBAR SUPERIOR GLASSMORPHIC -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="brand-block">
+          <img src="img/logo/logoHosteriaok.png" alt="Logo Hostería" class="header-mini-logo">
+          <div class="brand-info">
+            <div class="brand-greeting" id="storeStatusGreeting">
+              <span class="status-indicator-dot open"></span>
+              <span id="storeStatusText">Servicio Disponible · Cocina Abierta</span>
+            </div>
+            <div class="brand-title">Atahualpa Yupanqui</div>
           </div>
-          <div class="brand-title">Atahualpa Yupanqui</div>
+        </div>
+        <button class="cart-fab" onclick="openCart()" id="cartFab">
+          <span class="cart-fab-icon">🛎️</span>
+          <div class="cart-count" id="cartCount">0</div>
+        </button>
+      </div>
+
+      <!-- BARRA DE BÚSQUEDA EXCLUSIVA -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscá empanadas tucumanas, cortes premium, tragos..." id="searchInput"
+          oninput="filterMenu()">
+      </div>
+    </header>
+
+
+
+    <!-- SELECTOR DE CATEGORÍAS GOURMET -->
+    <div class="cats-wrap fade-section" id="fsCats">
+      <div class="section-label-center">
+        <span class="gold-subtitle">CARTA DE PLATOS</span>
+        <h2>Menú Room Service</h2>
+      </div>
+      <div class="cats-scroll" id="catScroll">
+        <div class="cat-pill active" onclick="filterCat('todos')" data-cat="todos"><span>🍽️</span>Todos</div>
+        <div class="cat-pill" onclick="filterCat('desayunos')" data-cat="desayunos"><span>🥐</span>Desayunos</div>
+        <div class="cat-pill" onclick="filterCat('cafeteria')" data-cat="cafeteria"><span>☕</span>Cafetería</div>
+        <div class="cat-pill" onclick="filterCat('regionales')" data-cat="regionales"><span>🥟</span>Regionales</div>
+        <div class="cat-pill" onclick="filterCat('carnes')" data-cat="carnes"><span>🥩</span>Carnes</div>
+        <div class="cat-pill" onclick="filterCat('pastas')" data-cat="pastas"><span>🍝</span>Pastas</div>
+        <div class="cat-pill" onclick="filterCat('minutas')" data-cat="minutas"><span>🥪</span>Minutas</div>
+        <div class="cat-pill" onclick="filterCat('snacks')" data-cat="snacks"><span>🧀</span>Snacks</div>
+        <div class="cat-pill" onclick="filterCat('postres')" data-cat="postres"><span>🍮</span>Postres</div>
+        <div class="cat-pill" onclick="filterCat('bebidas')" data-cat="bebidas"><span>🍋</span>Bebidas</div>
+        <div class="cat-pill" onclick="filterCat('tragos')" data-cat="tragos"><span>🍸</span>Tragos</div>
+      </div>
+    </div>
+
+    <!-- LISTA DE PRODUCTOS / CARTA GOURMET -->
+    <div class="menu-wrap fade-section" id="fsMenu">
+      <div class="section-label" id="menuTitle">🍽️ Selección Completa</div>
+      <div class="menu-list" id="menuList"></div>
+    </div>
+
+    <!-- FOOTER INSTITUCIONAL ELEGANTE -->
+    <footer class="app-footer fade-section" id="fsFooter">
+      <div class="footer-logo-box">
+        <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa" class="footer-logo">
+      </div>
+      <div class="footer-title">Hostería Municipal Atahualpa Yupanqui</div>
+      <div class="footer-text">
+        Un refugio de lujo y distinción inmerso en la selva de yungas tucumana. Ofrecemos a nuestros huéspedes un
+        servicio gastronómico de primer nivel directo en la comodidad de su suite.
+      </div>
+
+      <div class="footer-contact-grid">
+        <div class="fc-item">
+          <span class="fc-icon">📍</span>
+          <span class="fc-text">Paysandú 2400 · Tafí Viejo, Tucumán</span>
+        </div>
+        <div class="fc-item">
+          <span class="fc-icon">📲</span>
+          <span class="fc-text">Reservas: 381 500-0774</span>
+        </div>
+        <div class="fc-item">
+          <span class="fc-icon">🛎️</span>
+          <span class="fc-text">Room Service direct: +54 9 381 625-0447</span>
         </div>
       </div>
-      <button class="cart-fab" onclick="openCart()" id="cartFab">
-        <span class="cart-fab-icon">🛎️</span>
-        <div class="cart-count" id="cartCount">0</div>
-      </button>
-    </div>
-    
-    <!-- BARRA DE BÚSQUEDA EXCLUSIVA -->
-    <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input type="text" placeholder="Buscá empanadas tucumanas, cortes premium, tragos..." id="searchInput" oninput="filterMenu()">
-    </div>
-  </header>
 
-  <!-- HERO SECTION CINEMATOGRÁFICO FULLSCREEN -->
-  <section class="hero-carousel" id="fsHero">
-    <!-- Carrusel de imágenes de fondo en alta calidad -->
-    <div class="hero-slide active" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&auto=format&fit=crop&q=80')"></div>
-    <div class="hero-slide" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1600&auto=format&fit=crop&q=80')"></div>
-    <div class="hero-slide" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&auto=format&fit=crop&q=80')"></div>
-    
-    <div class="hero-overlay-decor"></div>
-    
-    <div class="hero-content">
-      <div class="hero-logo-box">
-        <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa Yupanqui" class="hero-logo">
+      <div class="footer-buttons">
+        <a href="https://hosteriatafiviejo.com.ar/" target="_blank" class="footer-btn site">
+          🌐 Sitio Web Oficial
+        </a>
+        <a href="https://instagram.com/hosteria_atahualpa_yupanqui" target="_blank" class="footer-btn ig">
+          📸 Instagram Oficial
+        </a>
       </div>
-      <span class="hero-subtitle">TAFÍ VIEJO · TUCUMÁN</span>
-      <h1 class="hero-title">Un Oasis de Confort y Elegancia</h1>
-      <p class="hero-phrase">“Descubre la magia de Tafí Viejo en Hostería Atahualpa Yupanqui. Tu oasis de confort y elegancia en cada visita. ¡Bienvenido a una experiencia única en el corazón de la naturaleza y la cultura!”</p>
-      
-      <div class="hero-actions">
-        <a href="#fsCats" class="hero-btn-primary">Ver Carta Gastronómica</a>
-        <a href="https://hosteriatafiviejo.com.ar/" target="_blank" class="hero-btn-secondary">Sitio Web Oficial 🌐</a>
-      </div>
-    </div>
-    
-    <div class="hero-scroll-indicator">
-      <span class="mouse-icon"><span class="mouse-wheel"></span></span>
-      <span class="scroll-text">Desliza para explorar</span>
-    </div>
-  </section>
 
-  <!-- BARRA DE ESTADO DE SUITE (INTEGRACIÓN MINIMALISTA DE VIRTUAL CARD) -->
-  <div class="suite-status-bar fade-section">
-    <div class="ss-left">
-      <span class="ss-icon">🛎️</span>
-      <span class="ss-title" id="walletRoomDisplay">Habitación: --</span>
-    </div>
-    <div class="ss-divider"></div>
-    <div class="ss-right">
-      <span class="ss-guest" id="walletGuestDisplay">Huésped Distinguido</span>
-      <span class="ss-badge">Servicio Activo</span>
-    </div>
+      <div class="footer-copyright">
+        &copy; 2026 Hostería Municipal Atahualpa Yupanqui. Todos los derechos reservados.
+      </div>
+    </footer>
+
+    <div style="height:100px"></div>
   </div>
 
-  <!-- BANNER DE COMPRA ANTERIOR (REPETIR ÚLTIMO PEDIDO GOURMET) -->
-  <div class="history-banner fade-section" id="historyBanner" style="display: none;">
-    <div class="hb-content">
-      <span class="hb-icon">🛎️</span>
-      <div class="hb-info">
-        <div class="hb-title">¿Desea repetir su última orden gastronómica?</div>
-        <div class="hb-desc" id="historyOrderDesc">Cargando detalles...</div>
+  <!-- BARRA FIJA INFERIOR (RESUMEN DEL PEDIDO) -->
+  <div class="bottom-bar">
+    <button class="order-btn" id="orderBtn" onclick="openCart()">
+      <div class="order-btn-left">
+        <div class="order-btn-count" id="btnCount">0</div>
+        <span>Ver Solicitud de Pedido</span>
       </div>
-    </div>
-    <button class="hb-btn" onclick="loadLastOrder(event)">Repetir Orden 🛒</button>
+      <div class="order-btn-total" id="btnTotal">$0</div>
+    </button>
   </div>
 
-  <!-- SELECTOR DE CATEGORÍAS GOURMET -->
-  <div class="cats-wrap fade-section" id="fsCats">
-    <div class="section-label-center">
-      <span class="gold-subtitle">CARTA DE PLATOS</span>
-      <h2>Menú Room Service</h2>
-    </div>
-    <div class="cats-scroll" id="catScroll">
-      <div class="cat-pill active" onclick="filterCat('todos')" data-cat="todos"><span>🍽️</span>Todos</div>
-      <div class="cat-pill" onclick="filterCat('desayunos')" data-cat="desayunos"><span>🥐</span>Desayunos</div>
-      <div class="cat-pill" onclick="filterCat('cafeteria')" data-cat="cafeteria"><span>☕</span>Cafetería</div>
-      <div class="cat-pill" onclick="filterCat('regionales')" data-cat="regionales"><span>🥟</span>Regionales</div>
-      <div class="cat-pill" onclick="filterCat('carnes')" data-cat="carnes"><span>🥩</span>Carnes</div>
-      <div class="cat-pill" onclick="filterCat('pastas')" data-cat="pastas"><span>🍝</span>Pastas</div>
-      <div class="cat-pill" onclick="filterCat('minutas')" data-cat="minutas"><span>🥪</span>Minutas</div>
-      <div class="cat-pill" onclick="filterCat('snacks')" data-cat="snacks"><span>🧀</span>Snacks</div>
-      <div class="cat-pill" onclick="filterCat('postres')" data-cat="postres"><span>🍮</span>Postres</div>
-      <div class="cat-pill" onclick="filterCat('bebidas')" data-cat="bebidas"><span>🍋</span>Bebidas</div>
-      <div class="cat-pill" onclick="filterCat('tragos')" data-cat="tragos"><span>🍸</span>Tragos</div>
-    </div>
-  </div>
-
-  <!-- LISTA DE PRODUCTOS / CARTA GOURMET -->
-  <div class="menu-wrap fade-section" id="fsMenu">
-    <div class="section-label" id="menuTitle">🍽️ Selección Completa</div>
-    <div class="menu-list" id="menuList"></div>
-  </div>
-
-  <!-- FOOTER INSTITUCIONAL ELEGANTE -->
-  <footer class="app-footer fade-section" id="fsFooter">
-    <div class="footer-logo-box">
-      <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa" class="footer-logo">
-    </div>
-    <div class="footer-title">Hostería Municipal Atahualpa Yupanqui</div>
-    <div class="footer-text">
-      Un refugio de lujo y distinción inmerso en la selva de yungas tucumana. Ofrecemos a nuestros huéspedes un servicio gastronómico de primer nivel directo en la comodidad de su suite.
-    </div>
-    
-    <div class="footer-contact-grid">
-      <div class="fc-item">
-        <span class="fc-icon">📍</span>
-        <span class="fc-text">Paysandú 2400 · Tafí Viejo, Tucumán</span>
-      </div>
-      <div class="fc-item">
-        <span class="fc-icon">📲</span>
-        <span class="fc-text">Reservas: 381 500-0774</span>
-      </div>
-      <div class="fc-item">
-        <span class="fc-icon">🛎️</span>
-        <span class="fc-text">Room Service direct: +54 9 381 625-0447</span>
+  <!-- PANEL DEL CARRITO Y CHECKOUT PREMIUM -->
+  <div class="panel-overlay" id="panelOverlay" onclick="closeCart()"></div>
+  <div class="panel" id="cartPanel">
+    <div class="panel-header-wrap">
+      <div class="panel-handle"></div>
+      <div class="panel-title">
+        <span>Solicitud de Room Service</span>
+        <button class="panel-close" onclick="closeCart()">✕</button>
       </div>
     </div>
 
-    <div class="footer-buttons">
-      <a href="https://hosteriatafiviejo.com.ar/" target="_blank" class="footer-btn site">
-        🌐 Sitio Web Oficial
-      </a>
-      <a href="https://instagram.com/hosteria_atahualpa_yupanqui" target="_blank" class="footer-btn ig">
-        📸 Instagram Oficial
-      </a>
-    </div>
-    
-    <div class="footer-copyright">
-      &copy; 2026 Hostería Municipal Atahualpa Yupanqui. Todos los derechos reservados.
-    </div>
-  </footer>
-
-  <div style="height:100px"></div>
-</div>
-
-<!-- BARRA FIJA INFERIOR (RESUMEN DEL PEDIDO) -->
-<div class="bottom-bar">
-  <button class="order-btn" id="orderBtn" onclick="openCart()">
-    <div class="order-btn-left">
-      <div class="order-btn-count" id="btnCount">0</div>
-      <span>Ver Solicitud de Pedido</span>
-    </div>
-    <div class="order-btn-total" id="btnTotal">$0</div>
-  </button>
-</div>
-
-<!-- PANEL DEL CARRITO Y CHECKOUT PREMIUM -->
-<div class="panel-overlay" id="panelOverlay" onclick="closeCart()"></div>
-<div class="panel" id="cartPanel">
-  <div class="panel-header-wrap">
-    <div class="panel-handle"></div>
-    <div class="panel-title">
-      <span>Solicitud de Room Service</span>
-      <button class="panel-close" onclick="closeCart()">✕</button>
-    </div>
-  </div>
-
-  <!-- Cart Content Area (dynamic) -->
-  <div class="panel-scroll-area">
-    <div class="room-service-exclusive-banner">
-      <span class="rse-icon">🛎️</span>
-      <div class="rse-text-box">
-        <div class="rse-title">Servicio a la Habitación</div>
-        <div class="rse-sub">Directo de nuestra cocina gourmet a su suite</div>
-      </div>
-    </div>
-
-    <div id="cartContent"></div>
-
-    <div id="cartForm" style="display:none" class="cart-form-container">
-      <div class="form-divider">📝 DATOS DE SU RESERVA</div>
-      
-      <div class="form-grid">
-        <!-- Número de Habitación es obligatorio y destacado -->
-        <div class="form-section full-width">
-          <label class="form-label highlighted">Número de Habitación *</label>
-          <input class="form-input room-number-input" type="text" id="fHabitacion" placeholder="Ej: 104 o Suite 2" required>
+    <!-- Cart Content Area (dynamic) -->
+    <div class="panel-scroll-area">
+      <div class="room-service-exclusive-banner">
+        <span class="rse-icon">🛎️</span>
+        <div class="rse-text-box">
+          <div class="rse-title">Servicio a la Habitación</div>
+          <div class="rse-sub">Directo de nuestra cocina gourmet a su suite</div>
         </div>
-        
-        <div class="form-section">
-          <label class="form-label">Nombre *</label>
-          <input class="form-input" type="text" id="fNombre" placeholder="Nombre" required>
-        </div>
-        
-        <div class="form-section">
-          <label class="form-label">Apellido *</label>
-          <input class="form-input" type="text" id="fApellido" placeholder="Apellido" required>
-        </div>
-        
-        <div class="form-section">
-          <label class="form-label">Correo Electrónico *</label>
-          <input class="form-input" type="email" id="fEmail" placeholder="ejemplo@correo.com" required>
+      </div>
+
+      <div id="cartContent"></div>
+
+      <div id="cartForm" style="display:none" class="cart-form-container">
+        <div class="form-divider">📝 DATOS DE SU RESERVA</div>
+
+        <div class="form-grid">
+          <!-- Número de Habitación es obligatorio y destacado -->
+          <div class="form-section full-width">
+            <label class="form-label highlighted">Número de Habitación *</label>
+            <input class="form-input room-number-input" type="text" id="fHabitacion" placeholder="Ej: 104 o Suite 2"
+              required>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label">Nombre *</label>
+            <input class="form-input" type="text" id="fNombre" placeholder="Nombre" required>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label">Apellido *</label>
+            <input class="form-input" type="text" id="fApellido" placeholder="Apellido" required>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label">Correo Electrónico *</label>
+            <input class="form-input" type="email" id="fEmail" placeholder="ejemplo@correo.com" required>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label">Teléfono Celular *</label>
+            <input class="form-input" type="tel" id="fTel" placeholder="Ej: 3815000774" required>
+          </div>
         </div>
 
         <div class="form-section">
-          <label class="form-label">Teléfono Celular *</label>
-          <input class="form-input" type="tel" id="fTel" placeholder="Ej: 3815000774" required>
+          <label class="form-label">Indicaciones Especiales u Observaciones (opcional)</label>
+          <textarea class="notes-input" id="fNota"
+            placeholder="Ej: sin cebolla, traer cubiertos adicionales, urgente, sin hielo en tragos..."></textarea>
         </div>
-      </div>
 
-      <div class="form-section">
-        <label class="form-label">Indicaciones Especiales u Observaciones (opcional)</label>
-        <textarea class="notes-input" id="fNota" placeholder="Ej: sin cebolla, traer cubiertos adicionales, urgente, sin hielo en tragos..."></textarea>
+        <button class="wa-btn" onclick="sendWhatsApp()">
+          <span class="wa-icon">🛎️</span>
+          Confirmar y Enviar Pedido a Cocina
+        </button>
+        <p class="form-secure-note">
+          🔒 Sus datos se procesarán de forma segura bajo estrictos estándares de privacidad del hotel.
+        </p>
       </div>
-
-      <button class="wa-btn" onclick="sendWhatsApp()">
-        <span class="wa-icon">🛎️</span>
-        Confirmar y Enviar Pedido a Cocina
-      </button>
-      <p class="form-secure-note">
-        🔒 Sus datos se procesarán de forma segura bajo estrictos estándares de privacidad del hotel.
-      </p>
     </div>
   </div>
-</div>
 
-<!-- NOTIFICACIÓN TIPO TOAST PREMIUM -->
-<div class="toast" id="toast"></div>
+  <!-- NOTIFICACIÓN TIPO TOAST PREMIUM -->
+  <div class="toast" id="toast"></div>
 
-<!-- SCRIPTS DE CARGA -->
-<script src="data.js"></script>
-<script src="app.js"></script>
+  <!-- SCRIPTS DE CARGA -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 
 </body>
+
 </html>
