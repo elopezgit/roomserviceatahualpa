@@ -385,7 +385,7 @@ function updateCartBadge() {
   if (cartCountEl) cartCountEl.textContent = count;
   if (btnCountEl) btnCountEl.textContent = count;
   if (btnTotalEl) btnTotalEl.textContent = formatPrice(total);
-  if (orderBtnEl) orderBtnEl.classList.toggle('active', count > 0);
+  if (orderBtnEl) orderBtnEl.classList.toggle('disabled', count === 0);
 
   if (cartCountEl) {
     cartCountEl.classList.remove('bump');
