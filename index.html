@@ -3,240 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>🐔 Punto 25 Delivery - Granja, Rebozados y Congelados</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>🛎️ Room Service - Hostería Atahualpa Yupanqui</title>
+  
+  <!-- FUENTES DE LUXE: Playfair Display para títulos, Outfit para cuerpo -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
+<!-- PANTALLA DE CARGA / SPLASH SCREEN CINEMATOGRÁFICO -->
 <div id="splash">
-  <div class="sp-logo-mockup">
-    <div class="sp-logo-text-1">PUNTO</div>
-    <div class="sp-logo-text-2">25</div>
-    <div class="sp-logo-text-3">Delivery</div>
+  <div class="sp-content">
+    <div class="sp-logo-container">
+      <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa Yupanqui" class="sp-logo">
+      <div class="sp-light-flare"></div>
+    </div>
+    <div class="sp-hotel-name">Hostería Atahualpa Yupanqui</div>
+    <div class="sp-tagline">SERVICIO DE HABITACIÓN DIGITAL</div>
+    <div class="sp-loader">
+      <div class="sp-loader-inner"></div>
+    </div>
   </div>
-  <div class="sp-name">Punto <span>25</span> Delivery</div>
-  <div class="sp-tagline">Frescura y Calidad a tu Mesa</div>
-  <div class="sp-loader"><div class="sp-loader-bar"></div></div>
 </div>
 
-<!-- APP MAIN CONTAINER -->
+<!-- CONTENEDOR PRINCIPAL DE LA APLICACIÓN -->
 <div id="app">
 
-  <!-- HEADER -->
-  <div class="header">
+  <!-- NAVBAR SUPERIOR GLASSMORPHIC -->
+  <header class="header">
     <div class="header-inner">
       <div class="brand-block">
-        <div class="brand-greeting" id="storeStatusGreeting">
-          <span class="status-indicator-dot open"></span>
-          <span id="storeStatusText">Abierto · Pedidos en Línea</span>
+        <img src="img/logo/logoHosteriaok.png" alt="Logo Hostería" class="header-mini-logo">
+        <div class="brand-info">
+          <div class="brand-greeting" id="storeStatusGreeting">
+            <span class="status-indicator-dot open"></span>
+            <span id="storeStatusText">Servicio Disponible · Cocina Abierta</span>
+          </div>
+          <div class="brand-title">Atahualpa Yupanqui</div>
         </div>
-        <div class="brand-name">Punto <span>25</span> Delivery</div>
       </div>
       <button class="cart-fab" onclick="openCart()" id="cartFab">
-        🛒
+        <span class="cart-fab-icon">🛎️</span>
         <div class="cart-count" id="cartCount">0</div>
       </button>
     </div>
+    
+    <!-- BARRA DE BÚSQUEDA EXCLUSIVA -->
     <div class="search-bar">
-      <span>🔍</span>
-      <input type="text" placeholder="Buscá patitas, nuggets, merluza..." id="searchInput" oninput="filterMenu()">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscá empanadas tucumanas, cortes premium, tragos..." id="searchInput" oninput="filterMenu()">
     </div>
-  </div>
+  </header>
 
-  <!-- BRAND HERO INFO BANNER -->
-  <div class="brand-hero fade-section" id="fsHero">
-    <div class="brand-hero-logo">
-      <div class="brand-hero-logo-t1">PUNTO</div>
-      <div class="brand-hero-logo-t2">25</div>
-      <div class="brand-hero-logo-t3">Delivery</div>
-    </div>
-    <div class="brand-hero-info">
-      <div class="brand-hero-title">Punto 25 Delivery</div>
-      <div class="brand-hero-address">📍 Corrientes 664 · Barrio Norte</div>
-      <div class="brand-hero-socials">
-        <a href="https://instagram.com/punto25delivery" target="_blank" class="hero-social-tag ig">
-          📸 @punto25delivery
-        </a>
-        <a href="https://wa.me/5493813253754" target="_blank" class="hero-social-tag wa">
-          📲 3813253754
-        </a>
+  <!-- HERO SECTION CINEMATOGRÁFICO FULLSCREEN -->
+  <section class="hero-carousel" id="fsHero">
+    <!-- Carrusel de imágenes de fondo en alta calidad -->
+    <div class="hero-slide active" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&auto=format&fit=crop&q=80')"></div>
+    <div class="hero-slide" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1600&auto=format&fit=crop&q=80')"></div>
+    <div class="hero-slide" style="background-image: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.75)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&auto=format&fit=crop&q=80')"></div>
+    
+    <div class="hero-overlay-decor"></div>
+    
+    <div class="hero-content">
+      <div class="hero-logo-box">
+        <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa Yupanqui" class="hero-logo">
+      </div>
+      <span class="hero-subtitle">TAFÍ VIEJO · TUCUMÁN</span>
+      <h1 class="hero-title">Un Oasis de Confort y Elegancia</h1>
+      <p class="hero-phrase">“Descubre la magia de Tafí Viejo en Hostería Atahualpa Yupanqui. Tu oasis de confort y elegancia en cada visita. ¡Bienvenido a una experiencia única en el corazón de la naturaleza y la cultura!”</p>
+      
+      <div class="hero-actions">
+        <a href="#fsCats" class="hero-btn-primary">Ver Carta Gastronómica</a>
+        <a href="https://hosteriatafiviejo.com.ar/" target="_blank" class="hero-btn-secondary">Sitio Web Oficial 🌐</a>
       </div>
     </div>
+    
+    <div class="hero-scroll-indicator">
+      <span class="mouse-icon"><span class="mouse-wheel"></span></span>
+      <span class="scroll-text">Desliza para explorar</span>
+    </div>
+  </section>
+
+  <!-- BARRA DE ESTADO DE SUITE (INTEGRACIÓN MINIMALISTA DE VIRTUAL CARD) -->
+  <div class="suite-status-bar fade-section">
+    <div class="ss-left">
+      <span class="ss-icon">🛎️</span>
+      <span class="ss-title" id="walletRoomDisplay">Habitación: --</span>
+    </div>
+    <div class="ss-divider"></div>
+    <div class="ss-right">
+      <span class="ss-guest" id="walletGuestDisplay">Huésped Distinguido</span>
+      <span class="ss-badge">Servicio Activo</span>
+    </div>
   </div>
 
-  <!-- HISTORY BANNER (REPETIR ÚLTIMO PEDIDO) -->
+  <!-- BANNER DE COMPRA ANTERIOR (REPETIR ÚLTIMO PEDIDO GOURMET) -->
   <div class="history-banner fade-section" id="historyBanner" style="display: none;">
     <div class="hb-content">
-      <span class="hb-icon">♻️</span>
+      <span class="hb-icon">🛎️</span>
       <div class="hb-info">
-        <div class="hb-title">¿Querés repetir tu última compra?</div>
-        <div class="hb-desc" id="historyOrderDesc">Cargando datos...</div>
+        <div class="hb-title">¿Desea repetir su última orden gastronómica?</div>
+        <div class="hb-desc" id="historyOrderDesc">Cargando detalles...</div>
       </div>
     </div>
-    <button class="hb-btn" onclick="loadLastOrder(event)">Repetir 🛒</button>
+    <button class="hb-btn" onclick="loadLastOrder(event)">Repetir Orden 🛒</button>
   </div>
 
-  <!-- PROMOS -->
-  <div class="promo-wrap fade-section" id="fsPromo">
-    <div class="promo-scroll" id="promoScroll">
-      <div class="promo-card p1">
-        <div class="promo-badge">⚡ ENVÍO EN EL DÍA</div>
-        <div class="promo-title">Granja y Congelados<br>a Domicilio</div>
-        <div class="promo-sub">Delivery rápido en Barrio Norte</div>
-        <div class="promo-emoji">🛵</div>
-      </div>
-      <div class="promo-card p2">
-        <div class="promo-badge">🍗 OFERTA DEL MES</div>
-        <div class="promo-title">Los Rebozados<br>Más Ricos</div>
-        <div class="promo-sub">¡Llevando por Kilo ahorrás siempre!</div>
-        <div class="promo-emoji">🍗</div>
-      </div>
-      <div class="promo-card p3">
-        <div class="promo-badge">🐟 MAR Y RÍO</div>
-        <div class="promo-title">Filet de Merluza<br>Fresco y Despinado</div>
-        <div class="promo-sub">Crocantes, rabas y medallones listos</div>
-        <div class="promo-emoji">🐟</div>
-      </div>
-    </div>
-    <div class="promo-dots" id="promoDots">
-      <div class="dot active" onclick="scrollToPromo(0)"></div>
-      <div class="dot" onclick="scrollToPromo(1)"></div>
-      <div class="dot" onclick="scrollToPromo(2)"></div>
-    </div>
-  </div>
-
-  <!-- CATEGORIES -->
+  <!-- SELECTOR DE CATEGORÍAS GOURMET -->
   <div class="cats-wrap fade-section" id="fsCats">
+    <div class="section-label-center">
+      <span class="gold-subtitle">CARTA DE PLATOS</span>
+      <h2>Menú Room Service</h2>
+    </div>
     <div class="cats-scroll" id="catScroll">
       <div class="cat-pill active" onclick="filterCat('todos')" data-cat="todos"><span>🍽️</span>Todos</div>
-      <div class="cat-pill" onclick="filterCat('pollo-rebozado')" data-cat="pollo-rebozado"><span>🍗</span>Rebozados Pollo</div>
-      <div class="cat-pill" onclick="filterCat('pollo-granja')" data-cat="pollo-granja"><span>🐔</span>Granja y Cortes</div>
-      <div class="cat-pill" onclick="filterCat('pescados-mariscos')" data-cat="pescados-mariscos"><span>🐟</span>Mar y Río</div>
-      <div class="cat-pill" onclick="filterCat('veggie-soja')" data-cat="veggie-soja"><span>🌿</span>Veggie & Soja</div>
-      <div class="cat-pill" onclick="filterCat('bocados-papas')" data-cat="bocados-papas"><span>🍟</span>Bocados & Papas</div>
-      <div class="cat-pill" onclick="filterCat('almacen-huevos')" data-cat="almacen-huevos"><span>🥚</span>Almacén</div>
+      <div class="cat-pill" onclick="filterCat('desayunos')" data-cat="desayunos"><span>🥐</span>Desayunos</div>
+      <div class="cat-pill" onclick="filterCat('cafeteria')" data-cat="cafeteria"><span>☕</span>Cafetería</div>
+      <div class="cat-pill" onclick="filterCat('regionales')" data-cat="regionales"><span>🥟</span>Regionales</div>
+      <div class="cat-pill" onclick="filterCat('carnes')" data-cat="carnes"><span>🥩</span>Carnes</div>
+      <div class="cat-pill" onclick="filterCat('pastas')" data-cat="pastas"><span>🍝</span>Pastas</div>
+      <div class="cat-pill" onclick="filterCat('minutas')" data-cat="minutas"><span>🥪</span>Minutas</div>
+      <div class="cat-pill" onclick="filterCat('snacks')" data-cat="snacks"><span>🧀</span>Snacks</div>
+      <div class="cat-pill" onclick="filterCat('postres')" data-cat="postres"><span>🍮</span>Postres</div>
+      <div class="cat-pill" onclick="filterCat('bebidas')" data-cat="bebidas"><span>🍋</span>Bebidas</div>
+      <div class="cat-pill" onclick="filterCat('tragos')" data-cat="tragos"><span>🍸</span>Tragos</div>
     </div>
   </div>
-  <!-- MENU LIST -->
+
+  <!-- LISTA DE PRODUCTOS / CARTA GOURMET -->
   <div class="menu-wrap fade-section" id="fsMenu">
-    <div class="section-label" id="menuTitle">🍽️ Catálogo Completo</div>
+    <div class="section-label" id="menuTitle">🍽️ Selección Completa</div>
     <div class="menu-list" id="menuList"></div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="app-footer fade-section" id="fsFooter">
-    <div class="footer-logo">Punto 25 Delivery</div>
-    <div class="footer-text">Llevamos los mejores rebozados, productos de granja, pescados y congelados directamente a tu cocina con la frescura que mereces.</div>
-    <div class="footer-address">
-      <span>📍 Nuestra Dirección</span>
-      Corrientes 664, Barrio Norte<br>San Miguel de Tucumán
+  <!-- FOOTER INSTITUCIONAL ELEGANTE -->
+  <footer class="app-footer fade-section" id="fsFooter">
+    <div class="footer-logo-box">
+      <img src="img/logo/logoHosteriaok.png" alt="Hostería Atahualpa" class="footer-logo">
     </div>
-    <div class="footer-buttons">
-      <a href="https://wa.me/5493813253754" target="_blank" class="footer-btn wa">
-        💬 WhatsApp 1
-      </a>
-      <a href="https://instagram.com/punto25delivery" target="_blank" class="footer-btn ig">
-        📸 Instagram
-      </a>
+    <div class="footer-title">Hostería Municipal Atahualpa Yupanqui</div>
+    <div class="footer-text">
+      Un refugio de lujo y distinción inmerso en la selva de yungas tucumana. Ofrecemos a nuestros huéspedes un servicio gastronómico de primer nivel directo en la comodidad de su suite.
     </div>
-  </div>
+    
+    <div class="footer-contact-grid">
+      <div class="fc-item">
+        <span class="fc-icon">📍</span>
+        <span class="fc-text">Paysandú 2400 · Tafí Viejo, Tucumán</span>
+      </div>
+      <div class="fc-item">
+        <span class="fc-icon">📲</span>
+        <span class="fc-text">Reservas: 381 500-0774</span>
+      </div>
+      <div class="fc-item">
+        <span class="fc-icon">🛎️</span>
+        <span class="fc-text">Room Service direct: +54 9 381 625-0447</span>
+      </div>
+    </div>
 
-  <div style="height:20px"></div>
+    <div class="footer-buttons">
+      <a href="https://hosteriatafiviejo.com.ar/" target="_blank" class="footer-btn site">
+        🌐 Sitio Web Oficial
+      </a>
+      <a href="https://instagram.com/hosteria_atahualpa_yupanqui" target="_blank" class="footer-btn ig">
+        📸 Instagram Oficial
+      </a>
+    </div>
+    
+    <div class="footer-copyright">
+      &copy; 2026 Hostería Municipal Atahualpa Yupanqui. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <div style="height:100px"></div>
 </div>
 
-<!-- BOTTOM STICKY BAR -->
+<!-- BARRA FIJA INFERIOR (RESUMEN DEL PEDIDO) -->
 <div class="bottom-bar">
   <button class="order-btn" id="orderBtn" onclick="openCart()">
     <div class="order-btn-left">
       <div class="order-btn-count" id="btnCount">0</div>
-      <span>Ver mi Pedido</span>
+      <span>Ver Solicitud de Pedido</span>
     </div>
     <div class="order-btn-total" id="btnTotal">$0</div>
   </button>
 </div>
 
-<!-- CART PANEL PANEL -->
+<!-- PANEL DEL CARRITO Y CHECKOUT PREMIUM -->
 <div class="panel-overlay" id="panelOverlay" onclick="closeCart()"></div>
 <div class="panel" id="cartPanel">
-  <div class="panel-handle"></div>
-  <div class="panel-title">
-    Tu Pedido 🛒
-    <button class="panel-close" onclick="closeCart()">✕</button>
-  </div>
-
-  <div class="delivery-toggle">
-    <button class="dtoggle-btn active" id="dBtn1" onclick="setDelivery('delivery')">🛵 Delivery</button>
-    <button class="dtoggle-btn" id="dBtn2" onclick="setDelivery('takeaway')">🏃 Retiro</button>
-  </div>
-
-  <!-- FREE SHIPPING PROGRESS BAR & KILO OPTIMIZER -->
-  <div class="free-shipping-container" id="freeShippingContainer">
-    <div class="fs-text-wrap">
-      <span class="fs-status-msg" id="freeShippingMsg">¡Cargando meta de envío gratis!</span>
-    </div>
-    <div class="fs-progress-bg">
-      <div class="fs-progress-fill" id="freeShippingFill" style="width: 0%;">
-        <span class="fs-progress-icon">🛵</span>
-      </div>
-    </div>
-    <div class="fs-suggestions" id="freeShippingSuggestions">
-      <span class="fs-sug-label">💡 Sumá al carrito para no pagar envío:</span>
-      <div class="fs-sug-grid" id="fsSugGrid"></div>
+  <div class="panel-header-wrap">
+    <div class="panel-handle"></div>
+    <div class="panel-title">
+      <span>Solicitud de Room Service</span>
+      <button class="panel-close" onclick="closeCart()">✕</button>
     </div>
   </div>
 
-  <div class="optimizer-alert" id="optimizerAlert" style="display: none;"></div>
-
-  <div id="cartContent"></div>
-
-  <div id="cartForm" style="display:none">
-    
-    <!-- WHATSAPP NUMBER SELECTOR -->
-    <div class="form-section">
-      <label class="form-label">¿A qué número enviar el pedido?</label>
-      <div class="wa-channel-grid">
-        <div class="wa-channel-card active" id="waCard0" onclick="selectWaChannel(0)">
-          <span class="c-icon">📲</span>
-          <span class="c-name">Celular Principal</span>
-          <span class="c-phone">381 325-3754</span>
-        </div>
-        <div class="wa-channel-card" id="waCard1" onclick="selectWaChannel(1)">
-          <span class="c-icon">📲</span>
-          <span class="c-name">Celular Alternativo</span>
-          <span class="c-phone">381 398-0410</span>
-        </div>
+  <!-- Cart Content Area (dynamic) -->
+  <div class="panel-scroll-area">
+    <div class="room-service-exclusive-banner">
+      <span class="rse-icon">🛎️</span>
+      <div class="rse-text-box">
+        <div class="rse-title">Servicio a la Habitación</div>
+        <div class="rse-sub">Directo de nuestra cocina gourmet a su suite</div>
       </div>
     </div>
 
-    <div class="form-section">
-      <label class="form-label">Tu Nombre</label>
-      <input class="form-input" type="text" id="fNombre" placeholder="Juan García">
+    <div id="cartContent"></div>
+
+    <div id="cartForm" style="display:none" class="cart-form-container">
+      <div class="form-divider">📝 DATOS DE SU RESERVA</div>
+      
+      <div class="form-grid">
+        <!-- Número de Habitación es obligatorio y destacado -->
+        <div class="form-section full-width">
+          <label class="form-label highlighted">Número de Habitación *</label>
+          <input class="form-input room-number-input" type="text" id="fHabitacion" placeholder="Ej: 104 o Suite 2" required>
+        </div>
+        
+        <div class="form-section">
+          <label class="form-label">Nombre *</label>
+          <input class="form-input" type="text" id="fNombre" placeholder="Nombre" required>
+        </div>
+        
+        <div class="form-section">
+          <label class="form-label">Apellido *</label>
+          <input class="form-input" type="text" id="fApellido" placeholder="Apellido" required>
+        </div>
+        
+        <div class="form-section">
+          <label class="form-label">Correo Electrónico *</label>
+          <input class="form-input" type="email" id="fEmail" placeholder="ejemplo@correo.com" required>
+        </div>
+
+        <div class="form-section">
+          <label class="form-label">Teléfono Celular *</label>
+          <input class="form-input" type="tel" id="fTel" placeholder="Ej: 3815000774" required>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Indicaciones Especiales u Observaciones (opcional)</label>
+        <textarea class="notes-input" id="fNota" placeholder="Ej: sin cebolla, traer cubiertos adicionales, urgente, sin hielo en tragos..."></textarea>
+      </div>
+
+      <button class="wa-btn" onclick="sendWhatsApp()">
+        <span class="wa-icon">🛎️</span>
+        Confirmar y Enviar Pedido a Cocina
+      </button>
+      <p class="form-secure-note">
+        🔒 Sus datos se procesarán de forma segura bajo estrictos estándares de privacidad del hotel.
+      </p>
     </div>
-    <div class="form-section">
-      <label class="form-label">Teléfono de Contacto</label>
-      <input class="form-input" type="tel" id="fTel" placeholder="381 123-4567">
-    </div>
-    <div class="form-section" id="addressSection">
-      <label class="form-label">Dirección de Entrega</label>
-      <input class="form-input" type="text" id="fDir" placeholder="Corrientes 500, piso 1 dpto A">
-    </div>
-    <div class="form-section">
-      <label class="form-label">Notas o Aclaraciones (opcional)</label>
-      <textarea class="notes-input" id="fNota" placeholder="Aclaraciones de envío o detalles de peso especial..."></textarea>
-    </div>
-    <button class="wa-btn" onclick="sendWhatsApp()">
-      <span class="wa-icon">📲</span>
-      Enviar Pedido por WhatsApp
-    </button>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- NOTIFICACIÓN TIPO TOAST PREMIUM -->
 <div class="toast" id="toast"></div>
 
-<!-- SCRIPTS: data.js first, then app.js -->
+<!-- SCRIPTS DE CARGA -->
 <script src="data.js"></script>
 <script src="app.js"></script>
 

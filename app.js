@@ -1,44 +1,51 @@
-// ─── STATE ───────────────────────────────────────────────────────
-let cart = {};                  // Almacena: { "id-opcion": cantidad }
-let selectedWeights = {};       // Almacena: { id: "1kg" o "0.5kg" }
-let selectedWaIdx = 0;          // Índice del número de WhatsApp seleccionado (0 o 1)
-let currentCat = 'todos';       // Categoría activa
-let deliveryMode = 'delivery';  // Modo de envío: 'delivery' o 'takeaway'
+// ─── ESTADO DE LA APLICACIÓN ───────────────────────────────────────
+let cart = {};                  // Estructura: { id_producto: cantidad }
+let currentCat = 'todos';       // Categoría gastronómica activa
 let toastTimer;
+let heroSlideIndex = 0;
 
-// ─── HELPERS ─────────────────────────────────────────────────────
+// ─── ETIQUETAS DE TAGS PREMIUM ─────────────────────────────────────
 function tagLabel(t) {
   const map = {
-    popular: '🔥 Popular',
-    niños: '👶 Para Chicos',
-    crocante: '⚡ Extra Crocante',
-    exprés: '⏱️ Exprés',
-    relleno: '🧀 Relleno',
-    saludable: '🥗 Saludable',
-    casero: '🏠 Casero',
-    premium: '⭐ Premium',
-    'sin-piel': '🍗 Sin Piel',
-    gourmet: '🍷 Gourmet',
-    fresco: '🍃 Fresco',
-    mar: '🌊 De Mar',
-    aromático: '🌿 Finas Hierbas',
-    tradicional: '🇦🇷 Tradicional',
-    natural: '🥬 Natural',
-    vegetariana: '🌿 Veggie',
-    'marca-premium': '🏆 McCain',
-    granja: '🥚 De Campo',
-    ahorro: '💰 Ahorro'
+    'exclusivo': '⭐ Exclusivo',
+    'completo': '🍽️ Completo',
+    'saludable': '🍃 Saludable',
+    'fit': '🥑 Fit',
+    'recomendado': '🏆 Recomendado',
+    'clasico': '☕ Clásico',
+    'relajante': '🫖 Relajante',
+    'tucumano': '🇦🇷 Regional Tucumano',
+    'imperdible': '🔥 Imperdible',
+    'tradicional': '🌽 Tradicional',
+    'vegetariano': '🌿 Vegetariano',
+    'gourmet': '🍷 Gourmet',
+    'destacado': '✨ Destacado',
+    'braseado': '🔥 Braseado lentamente',
+    'casero': '🍝 Casero',
+    'pasta-fresca': '🍝 Pasta Fresca',
+    'sabor-unico': ' Sandwich Gourmet',
+    'abundante': '🍽️ Abundante',
+    'para-compartir': '👥 Para Compartir',
+    'premium': '⭐ Premium',
+    'favorito': '❤️ Favorito',
+    'chocolate': '🍫 Puro Chocolate',
+    'regional-tucumano': '🇦🇷 Autóctono',
+    'refrescante': '🍋 Refrescante',
+    'natural': '🌿 Natural',
+    'hidratante': '💧 Hidratante',
+    'de-autor': '🍸 De Autor',
+    'seleccion-valles': '🍷 Valles Calchaquíes',
+    'argentino': '🇦🇷 Argentino'
   };
   return map[t] || t;
 }
 
+// ─── FORMATEO DE PRECIO (MONEDA ARGENTINA) ──────────────────────────
 function formatPrice(n) {
   return '$' + n.toLocaleString('es-AR');
 }
 
-/**
- * Devuelve el HTML de una foto con skeleton + fallback emoji.
- */
+// ─── CONTROL DE IMÁGENES GOURMET CON SKELETON ─────────────────────
 function photoHTML(src, emoji, alt = '') {
   const hasImage = src && src.trim() !== '';
   if (!hasImage) {
@@ -57,55 +64,81 @@ function photoHTML(src, emoji, alt = '') {
   `;
 }
 
+// ─── GENERADOR DE CÓDIGO DE ORDEN ROOM SERVICE ────────────────────
 function generateOrderId() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
   for (let i = 0; i < 4; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return `#25-${code}`;
+  return `#RS-${code}`;
 }
 
-function scrollToPromo(idx) {
-  const scroll = document.getElementById('promoScroll');
-  const card = scroll ? scroll.querySelector('.promo-card') : null;
-  if (scroll && card) {
-    const cardWidth = card.offsetWidth + 10; // ancho tarjeta + gap de 10px en flex
-    scroll.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
-  }
-}
-
-// ─── LOCAL STORAGE PERSISTENCE ───
-function saveClientData() {
-  const nombre = document.getElementById('fNombre') ? document.getElementById('fNombre').value.trim() : '';
-  const tel = document.getElementById('fTel') ? document.getElementById('fTel').value.trim() : '';
-  const dir = document.getElementById('fDir') ? document.getElementById('fDir').value.trim() : '';
+// ─── CARRUSEL AUTOMÁTICO DE HERO (IMÁGENES DEL HOTEL) ──────────────
+function initHeroCarousel() {
+  const slides = document.querySelectorAll('.hero-slide');
+  if (slides.length <= 1) return;
   
-  localStorage.setItem('p25_nombre', nombre);
-  localStorage.setItem('p25_tel', tel);
-  localStorage.setItem('p25_dir', dir);
-  localStorage.setItem('p25_delivery', deliveryMode);
+  setInterval(() => {
+    slides[heroSlideIndex].classList.remove('active');
+    heroSlideIndex = (heroSlideIndex + 1) % slides.length;
+    slides[heroSlideIndex].classList.add('active');
+  }, 6000); // Cambia cada 6 segundos de forma cinematográfica
+}
+
+// ─── PERSISTENCIA DE DATOS DEL HUÉSPED (LOCAL STORAGE) ──────────────
+function saveClientData() {
+  const habitacion = document.getElementById('fHabitacion') ? document.getElementById('fHabitacion').value.trim() : '';
+  const nombre = document.getElementById('fNombre') ? document.getElementById('fNombre').value.trim() : '';
+  const apellido = document.getElementById('fApellido') ? document.getElementById('fApellido').value.trim() : '';
+  const email = document.getElementById('fEmail') ? document.getElementById('fEmail').value.trim() : '';
+  const tel = document.getElementById('fTel') ? document.getElementById('fTel').value.trim() : '';
+  
+  localStorage.setItem('rs_habitacion', habitacion);
+  localStorage.setItem('rs_nombre', nombre);
+  localStorage.setItem('rs_apellido', apellido);
+  localStorage.setItem('rs_email', email);
+  localStorage.setItem('rs_tel', tel);
 }
 
 function loadClientData() {
-  const nombre = localStorage.getItem('p25_nombre') || '';
-  const tel = localStorage.getItem('p25_tel') || '';
-  const dir = localStorage.getItem('p25_dir') || '';
-  const delivery = localStorage.getItem('p25_delivery') || 'delivery';
+  const habitacion = localStorage.getItem('rs_habitacion') || '';
+  const nombre = localStorage.getItem('rs_nombre') || '';
+  const apellido = localStorage.getItem('rs_apellido') || '';
+  const email = localStorage.getItem('rs_email') || '';
+  const tel = localStorage.getItem('rs_tel') || '';
   
+  if (document.getElementById('fHabitacion')) document.getElementById('fHabitacion').value = habitacion;
   if (document.getElementById('fNombre')) document.getElementById('fNombre').value = nombre;
+  if (document.getElementById('fApellido')) document.getElementById('fApellido').value = apellido;
+  if (document.getElementById('fEmail')) document.getElementById('fEmail').value = email;
   if (document.getElementById('fTel')) document.getElementById('fTel').value = tel;
-  if (document.getElementById('fDir')) document.getElementById('fDir').value = dir;
-  
-  setDelivery(delivery);
+
+  updateWalletDisplay();
+}
+
+function updateWalletDisplay() {
+  const habitacion = document.getElementById('fHabitacion') ? document.getElementById('fHabitacion').value.trim() : '';
+  const nombre = document.getElementById('fNombre') ? document.getElementById('fNombre').value.trim() : '';
+  const apellido = document.getElementById('fApellido') ? document.getElementById('fApellido').value.trim() : '';
+
+  const roomDisplay = document.getElementById('walletRoomDisplay');
+  const guestDisplay = document.getElementById('walletGuestDisplay');
+
+  if (roomDisplay) {
+    roomDisplay.textContent = habitacion ? `Habitación: ${habitacion}` : 'Habitación: --';
+  }
+  if (guestDisplay) {
+    guestDisplay.textContent = (nombre || apellido) ? `${nombre} ${apellido}` : 'Huésped Distinguido';
+  }
 }
 
 function saveLastOrder() {
-  localStorage.setItem('p25_last_cart', JSON.stringify(cart));
+  localStorage.setItem('rs_last_cart', JSON.stringify(cart));
 }
 
 function checkLastOrderHistory() {
-  const lastCartStr = localStorage.getItem('p25_last_cart');
+  const lastCartStr = localStorage.getItem('rs_last_cart');
   const banner = document.getElementById('historyBanner');
   if (lastCartStr && banner) {
     try {
@@ -114,14 +147,12 @@ function checkLastOrderHistory() {
       if (keys.length > 0) {
         let descItems = [];
         keys.slice(0, 3).forEach(key => {
-          const [idStr, opt] = key.split('-');
-          const item = MENU.find(i => i.id === parseInt(idStr));
+          const item = MENU.find(i => i.id === parseInt(key));
           if (item) {
-            const optText = item.unitType === 'peso' ? (opt === '0.5kg' ? '½ Kg' : '1 Kg') : 'Unid.';
-            descItems.push(`${item.name} (${optText})`);
+            descItems.push(item.name);
           }
         });
-        if (keys.length > 3) descItems.push('y más...');
+        if (keys.length > 3) descItems.push('y otros platos...');
         
         const descEl = document.getElementById('historyOrderDesc');
         if (descEl) descEl.textContent = descItems.join(', ');
@@ -139,201 +170,46 @@ function checkLastOrderHistory() {
 
 function loadLastOrder(event) {
   if (event) event.stopPropagation();
-  const lastCartStr = localStorage.getItem('p25_last_cart');
+  const lastCartStr = localStorage.getItem('rs_last_cart');
   if (lastCartStr) {
     try {
       cart = JSON.parse(lastCartStr);
-      Object.keys(cart).forEach(key => {
-        const [idStr, opt] = key.split('-');
-        if (opt === '1kg' || opt === '0.5kg') {
-          selectedWeights[parseInt(idStr)] = opt;
-        }
-      });
+      // Actualizar toda la interfaz gastronómica
       renderMenu(currentCat === 'todos' ? MENU : MENU.filter(i => i.cat === currentCat));
       updateCartBadge();
-      showToast('🛒 ¡Pedido anterior cargado con éxito!');
+      showToast('🛎️ ¡Último pedido gourmet cargado al carrito!');
       document.getElementById('historyBanner').style.display = 'none';
       openCart();
     } catch (e) {
-      showToast('⚠️ Error al cargar el historial');
+      showToast('⚠️ Error al recuperar el pedido anterior');
     }
   }
 }
 
-// ─── FREE SHIPPING TRACKER ───
-function updateFreeShippingTracker(total) {
-  const container = document.getElementById('freeShippingContainer');
-  if (!container) return;
-
-  if (deliveryMode === 'takeaway') {
-    container.style.display = 'none';
-    return;
-  }
-
-  container.style.display = 'block';
-  const limit = 12000;
-  const percent = Math.min(100, (total / limit) * 100);
-  
-  const fill = document.getElementById('freeShippingFill');
-  const msg = document.getElementById('freeShippingMsg');
-  const suggestions = document.getElementById('freeShippingSuggestions');
-  const grid = document.getElementById('fsSugGrid');
-
-  if (fill) fill.style.width = percent + '%';
-
-  if (total >= limit) {
-    if (msg) msg.innerHTML = '¡Felicidades! 🎉 ¡Conseguiste <strong>Envío Gratis</strong>!';
-    if (suggestions) suggestions.style.display = 'none';
-  } else {
-    const remaining = limit - total;
-    if (msg) msg.innerHTML = `¡Estás a <strong>${formatPrice(remaining)}</strong> de conseguir <strong>Envío Gratis</strong>!`;
-    if (suggestions) suggestions.style.display = 'flex';
-    
-    // Sugerencias de productos complementarios baratos
-    const sugItems = [
-      { id: 45, name: 'Huevos Campo', price: 2200, emoji: '🥚' },
-      { id: 43, name: 'Papas McCain', price: 3200, emoji: '🍟' },
-      { id: 35, name: 'Tequeños', price: 3450, emoji: '🫔' },
-      { id: 34, name: 'Bastones Mozzarella', price: 3650, emoji: '🧀' }
-    ];
-
-    if (grid) {
-      grid.innerHTML = sugItems.map(s => `
-        <div class="fs-sug-card" onclick="addQuickSuggestion(${s.id})">
-          <span style="font-size:14px">${s.emoji}</span>
-          <div style="display:flex;flex-direction:column;align-items:flex-start">
-            <span class="fs-sug-name">${s.name}</span>
-            <span class="fs-sug-price">${formatPrice(s.price)}</span>
-          </div>
-          <button class="fs-sug-add">+</button>
-        </div>
-      `).join('');
-    }
-  }
-}
-
-function addQuickSuggestion(id) {
-  const item = MENU.find(i => i.id === id);
-  if (!item) return;
-
-  const opt = item.unitType === 'peso' ? '1kg' : 'unidad';
-  const cartKey = `${id}-${opt}`;
-  
-  cart[cartKey] = (cart[cartKey] || 0) + 1;
-  updateAll(id);
-  showToast(`💡 ${item.name} agregado`);
-}
-
-// ─── KILO OPTIMIZER ───
-function checkKiloOptimizer() {
-  const alertBox = document.getElementById('optimizerAlert');
-  if (!alertBox) return;
-
-  // Buscar el primer producto pesable que tenga al menos 2 unidades de medio kilo
-  const optimizable = MENU.find(item => {
-    if (item.unitType !== 'peso') return false;
-    const qtyHalf = cart[`${item.id}-0.5kg`] || 0;
-    return qtyHalf >= 2;
-  });
-
-  if (optimizable) {
-    const qtyHalf = cart[`${optimizable.id}-0.5kg`] || 0;
-    const costHalf = qtyHalf * optimizable.priceHalf;
-    const optimizedKilos = Math.floor(qtyHalf / 2);
-    const remainingHalves = qtyHalf % 2;
-    const costOptimized = (optimizedKilos * optimizable.price) + (remainingHalves * optimizable.priceHalf);
-    const saving = costHalf - costOptimized;
-
-    if (saving > 0) {
-      alertBox.innerHTML = `
-        <div class="opt-header">
-          <span class="opt-icon">💡</span>
-          <span class="opt-title">¡Sugerencia de Ahorro!</span>
-        </div>
-        <div class="opt-body">
-          Tenés <strong>${qtyHalf} unidades de ½ Kg</strong> de <strong>${optimizable.name}</strong> en tu carrito. Si lo unificás a Kilos completos, ¡te ahorrás <strong>${formatPrice(saving)}</strong>!
-        </div>
-        <div class="opt-footer">
-          <button class="opt-btn" onclick="optimizeWeight(${optimizable.id})">Optimizar y Ahorrar 💰</button>
-        </div>
-      `;
-      alertBox.style.display = 'flex';
-      return;
-    }
-  }
-  
-  alertBox.style.display = 'none';
-}
-
-function optimizeWeight(id) {
-  const keyHalf = `${id}-0.5kg`;
-  const keyKilo = `${id}-1kg`;
-  const qtyHalf = cart[keyHalf] || 0;
-  
-  if (qtyHalf >= 2) {
-    const optimizedKilos = Math.floor(qtyHalf / 2);
-    const remainingHalves = qtyHalf % 2;
-    
-    cart[keyKilo] = (cart[keyKilo] || 0) + optimizedKilos;
-    if (remainingHalves > 0) {
-      cart[keyHalf] = remainingHalves;
-    } else {
-      delete cart[keyHalf];
-    }
-    updateAll(id);
-    showToast('⚡ ¡Pedido optimizado y unificado!');
-  }
-}
-
-// ─── HORARIOS DE APERTURA REALTIME ───
+// ─── HORARIOS DE COCINA REALTIME ──────────────────────────────────
 function checkStoreSchedule() {
   const now = new Date();
-  const day = now.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
   const hour = now.getHours();
-  const min = now.getMinutes();
-  const timeVal = hour * 100 + min; // Formato hhmm (ej. 1430)
   
-  let isOpen = false;
-  let statusText = '';
+  // Abierto de 07:00 AM a 01:30 AM del día siguiente para Room Service premium
+  const isOpen = (hour >= 7 || hour < 2);
   
-  if (day >= 1 && day <= 6) { // Lunes a Sábado
-    const morningOpen = 930;
-    const morningClose = 1330;
-    const eveningOpen = 1730;
-    const eveningClose = 2130;
-    
-    if ((timeVal >= morningOpen && timeVal <= morningClose) || 
-        (timeVal >= eveningOpen && timeVal <= eveningClose)) {
-      isOpen = true;
-      statusText = 'Abierto ahora · Entrega estimada 30-50 min';
-    } else {
-      if (timeVal < morningOpen) {
-        statusText = 'Cerrado ahora · Abrimos a las 09:30hs';
-      } else if (timeVal > morningClose && timeVal < eveningOpen) {
-        statusText = 'Cerrado ahora · Abrimos a las 17:30hs';
-      } else {
-        statusText = 'Cerrado ahora · Abrimos mañana a las 09:30hs';
-      }
-    }
-  } else { // Domingo cerrado
-    statusText = 'Cerrado hoy Domingo · Abrimos Lunes 09:30hs';
-  }
-  
-  // Actualizar indicador en UI
-  const greeting = document.getElementById('storeStatusGreeting');
-  const indicator = greeting ? greeting.querySelector('.status-indicator-dot') : null;
   const label = document.getElementById('storeStatusText');
-  
-  if (greeting && indicator && label) {
-    indicator.className = 'status-indicator-dot ' + (isOpen ? 'open' : 'closed');
-    label.textContent = statusText;
+  const indicator = document.querySelector('.status-indicator-dot');
+  if (label && indicator) {
+    if (isOpen) {
+      indicator.className = 'status-indicator-dot open';
+      label.textContent = 'Servicio Disponible · Cocina Abierta';
+    } else {
+      indicator.className = 'status-indicator-dot closed';
+      label.textContent = 'Cocina Cerrada · Disponible desde las 07:00hs';
+    }
   }
   
-  // Modificar botón de envío en el panel
   const waBtn = document.querySelector('.wa-btn');
   if (waBtn) {
     if (isOpen) {
-      waBtn.innerHTML = '<span class="wa-icon">📲</span> Enviar Pedido por WhatsApp';
+      waBtn.innerHTML = '<span class="wa-icon">🛎️</span> Confirmar y Enviar Pedido a Cocina';
     } else {
       waBtn.innerHTML = '<span class="wa-icon">📅</span> Agendar Pedido para la Apertura';
     }
@@ -342,58 +218,29 @@ function checkStoreSchedule() {
   return isOpen;
 }
 
-// ─── RENDER MENU ─────────────────────────────────────────────────
+// ─── RENDERIZADO DEL MENÚ GASTRONÓMICO ─────────────────────────────
 function renderMenu(items) {
   const list = document.getElementById('menuList');
+  if (!list) return;
   list.innerHTML = '';
 
   items.forEach(item => {
-    // Determinar la opción de peso por defecto si no está seteada
-    if (item.unitType === 'peso' && !selectedWeights[item.id]) {
-      selectedWeights[item.id] = '1kg';
-    }
-
-    const opt = item.unitType === 'peso' ? selectedWeights[item.id] : 'unidad';
-    const cartKey = `${item.id}-${opt}`;
-    const qty = cart[cartKey] || 0;
+    const qty = cart[item.id] || 0;
     const inCart = qty > 0;
 
-    // Controles dinámicos
+    // Controles interactivos
     const controls = inCart
       ? `<button class="qty-btn" onclick="changeQty(${item.id},-1,event)">−</button>
          <div class="qty-num" id="qn-${item.id}">${qty}</div>
          <button class="qty-btn" onclick="changeQty(${item.id},1,event)">+</button>`
       : `<button class="qty-add-btn" onclick="addItem(${item.id},event)">+</button>`;
 
-    // Selector de peso (sólo para productos pesables)
-    let weightSelectorHTML = '';
-    let priceLabelHTML = '';
-
-    if (item.unitType === 'peso') {
-      const activeHalf = opt === '0.5kg' ? 'active' : '';
-      const activeKilo = opt === '1kg' ? 'active' : '';
-      weightSelectorHTML = `
-        <div class="weight-selector" onclick="event.stopPropagation()">
-          <div class="weight-pill ${activeHalf}" onclick="setWeightOption(${item.id}, '0.5kg')">½ Kg</div>
-          <div class="weight-pill ${activeKilo}" onclick="setWeightOption(${item.id}, '1kg')">1 Kg</div>
-        </div>`;
-
-      const currentPrice = opt === '0.5kg' ? item.priceHalf : item.price;
-      const unitText = opt === '0.5kg' ? '½ Kg' : 'Kg';
-      priceLabelHTML = `${formatPrice(currentPrice)} <span class="price-unit">x ${unitText}</span>`;
-    } else {
-      let unitSuffix = 'Unidad';
-      if (item.cat === 'almacen-huevos' && item.id === 45) unitSuffix = 'Docena';
-      if (item.cat === 'almacen-huevos' && item.id === 46) unitSuffix = 'Bandeja';
-      priceLabelHTML = `${formatPrice(item.price)} <span class="price-unit">x ${unitSuffix}</span>`;
-    }
-
     const tags = item.tags
-      .map(t => `<div class="item-tag ${t === 'popular' ? 'popular' : t === 'relleno' ? 'relleno' : t === 'premium' ? 'premium' : ''}">${tagLabel(t)}</div>`)
-      .join('');
+      ? item.tags.map(t => `<div class="item-tag">${tagLabel(t)}</div>`).join('')
+      : '';
 
     list.innerHTML += `
-      <div class="menu-item ${inCart ? 'in-cart' : ''}" id="mi-${item.id}" onclick="handleCardClick(${item.id})">
+      <div class="menu-item ${inCart ? 'in-cart' : ''}" id="mi-${item.id}">
         <div class="item-photo">
           ${photoHTML(item.img, item.emoji, item.name)}
         </div>
@@ -401,11 +248,10 @@ function renderMenu(items) {
           <div>
             <div class="item-name">${item.name}</div>
             <div class="item-desc">${item.desc}</div>
-            ${weightSelectorHTML}
             <div class="item-tags">${tags}</div>
           </div>
           <div class="item-footer">
-            <div class="item-price" id="pr-${item.id}">${priceLabelHTML}</div>
+            <div class="item-price">${formatPrice(item.price)}</div>
             <div class="item-controls" id="ctrl-${item.id}">${controls}</div>
           </div>
         </div>
@@ -413,30 +259,7 @@ function renderMenu(items) {
   });
 }
 
-function handleCardClick(id) {
-  // Opcional: acción al tocar la tarjeta, en este caso es amigable sumarlo o cambiar foco
-}
-
-// Cambiar la opción de peso de un producto
-function setWeightOption(id, option) {
-  selectedWeights[id] = option;
-  
-  // Re-renderizar el item para actualizar el precio y contador correspondiente sin perder foco
-  const item = MENU.find(i => i.id === id);
-  if (item) {
-    // Buscamos si el item está en la vista actual
-    const el = document.getElementById('mi-' + id);
-    if (el) {
-      // Re-renderizamos los items de la categoría para refrescar de forma limpia
-      const activeItems = currentCat === 'todos' ? MENU : MENU.filter(i => i.cat === currentCat);
-      renderMenu(activeItems);
-    }
-  }
-}
-
-
-
-// ─── CATEGORY FILTER ─────────────────────────────────────────────
+// ─── FILTRADO POR CATEGORÍAS GOURMET ───────────────────────────────
 function filterCat(cat) {
   currentCat = cat;
 
@@ -446,103 +269,94 @@ function filterCat(cat) {
 
   const items = cat === 'todos' ? MENU : MENU.filter(i => i.cat === cat);
   const labels = {
-    todos: '🍽️ Catálogo Completo',
-    'pollo-rebozado': '🍗 Rebozados de Pollo',
-    'pollo-granja': '🐔 Granja y Cortes',
-    'pescados-mariscos': '🐟 Mar y Río (Pescados)',
-    'veggie-soja': '🌿 Veggie & Soja',
-    'bocados-papas': '🍟 Bocados & Papas',
-    'almacen-huevos': '🥚 Almacén y Huevos'
+    todos: '🍽️ Selección Completa',
+    desayunos: '🥐 Desayunos de la Yunga',
+    cafeteria: '☕ Cafetería de Especialidad',
+    regionales: '🥟 Platos Regionales Tucumanos',
+    carnes: '🥩 Carnes Premium de la Hostería',
+    pastas: '🍝 Pastas Caseras y Salsas',
+    minutas: ' Sandwichería y Minutas Deluxe',
+    snacks: '🧀 Tablas y Snacks Exclusivos',
+    postres: '🍮 Postres Artesanales Regionales',
+    bebidas: '🍋 Bebidas y Jugos Naturales',
+    tragos: '🍸 Tragos de Autor y Vinos'
   };
 
-  document.getElementById('menuTitle').textContent = labels[cat] || '🍽️ Menú';
+  const titleEl = document.getElementById('menuTitle');
+  if (titleEl) titleEl.textContent = labels[cat] || '🍽️ Menú';
   renderMenu(items);
 }
 
+// ─── FILTRADO POR BÚSQUEDA ─────────────────────────────────────────
 function filterMenu() {
   const q = document.getElementById('searchInput').value.toLowerCase();
-  if (!q) { filterCat(currentCat); return; }
+  const titleEl = document.getElementById('menuTitle');
+  if (!q) { 
+    filterCat(currentCat); 
+    return; 
+  }
 
   const items = MENU.filter(i =>
-    i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q)
+    i.name.toLowerCase().includes(q) || 
+    i.desc.toLowerCase().includes(q) || 
+    (i.ingredients && i.ingredients.toLowerCase().includes(q))
   );
-  document.getElementById('menuTitle').textContent = `🔍 "${q}"`;
+  if (titleEl) titleEl.textContent = `🔍 Resultados para "${q}"`;
   renderMenu(items);
 }
 
-// ─── CART ACTIONS ─────────────────────────────────────────────────
+// ─── ACCIONES DEL CARRITO DE COMPRAS ───────────────────────────────
 function addItem(id, event) {
   if (event) event.stopPropagation();
 
   const item = MENU.find(i => i.id === id);
   if (!item) return;
 
-  const opt = item.unitType === 'peso' ? (selectedWeights[id] || '1kg') : 'unidad';
-  const cartKey = `${id}-${opt}`;
-
-  cart[cartKey] = (cart[cartKey] || 0) + 1;
+  cart[id] = (cart[id] || 0) + 1;
 
   updateAll(id);
   spawnParticle(id);
-
-  const unitText = item.unitType === 'peso' ? (opt === '0.5kg' ? ' x ½ Kg' : ' x 1 Kg') : '';
-  showToast(`🍗 ${item.name}${unitText} agregado`);
+  showToast(`🛎️ ${item.name} agregado a la habitación`);
 }
-
-
 
 function changeQty(id, delta, event) {
   if (event) event.stopPropagation();
 
-  const item = MENU.find(i => i.id === id);
-  if (!item) return;
-
-  const opt = item.unitType === 'peso' ? (selectedWeights[id] || '1kg') : 'unidad';
-  const cartKey = `${id}-${opt}`;
-
-  cart[cartKey] = Math.max(0, (cart[cartKey] || 0) + delta);
-  if (cart[cartKey] === 0) delete cart[cartKey];
+  cart[id] = Math.max(0, (cart[id] || 0) + delta);
+  if (cart[id] === 0) delete cart[id];
 
   updateAll(id);
 }
 
-function changeQtyByKey(key, delta) {
-  cart[key] = Math.max(0, (cart[key] || 0) + delta);
-  if (cart[key] === 0) delete cart[key];
+function changeQtyByKey(id, delta) {
+  cart[id] = Math.max(0, (cart[id] || 0) + delta);
+  if (cart[id] === 0) delete cart[id];
 
-  const [idStr] = key.split('-');
-  updateAll(parseInt(idStr));
+  updateAll(parseInt(id));
 }
 
 function updateAll(changedId) {
-  // Re-renderizamos los controles de la tarjeta afectada en la vista principal
-  const item = MENU.find(i => i.id === changedId);
-  if (item) {
-    const opt = item.unitType === 'peso' ? (selectedWeights[changedId] || '1kg') : 'unidad';
-    const cartKey = `${changedId}-${opt}`;
-    const qty = cart[cartKey] || 0;
+  const qty = cart[changedId] || 0;
+  const ctrl = document.getElementById('ctrl-' + changedId);
+  const mi = document.getElementById('mi-' + changedId);
 
-    const ctrl = document.getElementById('ctrl-' + changedId);
-    const mi = document.getElementById('mi-' + changedId);
-
-    if (ctrl) {
-      if (qty > 0) {
-        ctrl.innerHTML = `
-          <button class="qty-btn" onclick="changeQty(${changedId},-1,event)">−</button>
-          <div class="qty-num" id="qn-${changedId}">${qty}</div>
-          <button class="qty-btn" onclick="changeQty(${changedId},1,event)">+</button>`;
-        mi.classList.add('in-cart');
-      } else {
-        ctrl.innerHTML = `<button class="qty-add-btn" onclick="addItem(${changedId},event)">+</button>`;
-        mi.classList.remove('in-cart');
-      }
+  if (ctrl && mi) {
+    if (qty > 0) {
+      ctrl.innerHTML = `
+        <button class="qty-btn" onclick="changeQty(${changedId},-1,event)">−</button>
+        <div class="qty-num" id="qn-${changedId}">${qty}</div>
+        <button class="qty-btn" onclick="changeQty(${changedId},1,event)">+</button>`;
+      mi.classList.add('in-cart');
+    } else {
+      ctrl.innerHTML = `<button class="qty-add-btn" onclick="addItem(${changedId},event)">+</button>`;
+      mi.classList.remove('in-cart');
     }
   }
 
-  // Refrescar badge general
+  // Actualizar indicadores visuales de compra
   updateCartBadge();
 
-  // Si el panel del carrito está abierto, re-renderizarlo
+  // Si el panel de Room Service está desplegado, refrescarlo
   if (document.getElementById('cartPanel').classList.contains('open')) {
     renderCartPanel();
   }
@@ -550,13 +364,11 @@ function updateAll(changedId) {
 
 function getTotals() {
   let count = 0, total = 0;
-  Object.entries(cart).forEach(([key, qty]) => {
-    const [idStr, opt] = key.split('-');
+  Object.entries(cart).forEach(([idStr, qty]) => {
     const item = MENU.find(i => i.id === parseInt(idStr));
     if (item) {
       count += qty;
-      const price = (opt === '0.5kg' && item.priceHalf) ? item.priceHalf : item.price;
-      total += price * qty;
+      total += item.price * qty;
     }
   });
   return { count, total };
@@ -565,18 +377,24 @@ function getTotals() {
 function updateCartBadge() {
   const { count, total } = getTotals();
 
-  document.getElementById('cartCount').textContent = count;
-  document.getElementById('btnCount').textContent = count;
-  document.getElementById('btnTotal').textContent = formatPrice(total);
-  document.getElementById('orderBtn').classList.toggle('active', count > 0);
+  const cartCountEl = document.getElementById('cartCount');
+  const btnCountEl = document.getElementById('btnCount');
+  const btnTotalEl = document.getElementById('btnTotal');
+  const orderBtnEl = document.getElementById('orderBtn');
 
-  const cc = document.getElementById('cartCount');
-  cc.classList.remove('bump');
-  void cc.offsetWidth;
-  cc.classList.add('bump');
+  if (cartCountEl) cartCountEl.textContent = count;
+  if (btnCountEl) btnCountEl.textContent = count;
+  if (btnTotalEl) btnTotalEl.textContent = formatPrice(total);
+  if (orderBtnEl) orderBtnEl.classList.toggle('active', count > 0);
+
+  if (cartCountEl) {
+    cartCountEl.classList.remove('bump');
+    void cartCountEl.offsetWidth;
+    cartCountEl.classList.add('bump');
+  }
 }
 
-// ─── CART PANEL ───────────────────────────────────────────────────
+// ─── DESPLIEGUE DEL PANEL DE ROOM SERVICE ──────────────────────────
 function openCart() {
   document.getElementById('cartPanel').classList.add('open');
   document.getElementById('panelOverlay').classList.add('open');
@@ -590,49 +408,27 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-function selectWaChannel(idx) {
-  selectedWaIdx = idx;
-  document.getElementById('waCard0').classList.toggle('active', idx === 0);
-  document.getElementById('waCard1').classList.toggle('active', idx === 1);
-}
-
 function renderCartPanel() {
   const { count, total } = getTotals();
   const content = document.getElementById('cartContent');
   const form = document.getElementById('cartForm');
 
   if (count === 0) {
-    content.innerHTML = `
-      <div class="cart-empty">
-        <div class="cart-empty-emoji">🛒</div>
-        <div class="cart-empty-text">Tu carrito está vacío.<br>¡Agregá algo rico del catálogo!</div>
-      </div>`;
-    form.style.display = 'none';
-    
-    // Ocultar barras de envío gratis y optimizador si está vacío
-    if (document.getElementById('freeShippingContainer')) document.getElementById('freeShippingContainer').style.display = 'none';
-    if (document.getElementById('optimizerAlert')) document.getElementById('optimizerAlert').style.display = 'none';
+    if (content) {
+      content.innerHTML = `
+        <div class="cart-empty">
+          <div class="cart-empty-emoji">🛎️</div>
+          <div class="cart-empty-text">No ha seleccionado ningún plato aún.<br>Explore nuestra carta exclusiva.</div>
+        </div>`;
+    }
+    if (form) form.style.display = 'none';
     return;
   }
 
   let rows = '<div class="cart-list">';
-  Object.entries(cart).forEach(([key, qty]) => {
-    const [idStr, opt] = key.split('-');
+  Object.entries(cart).forEach(([idStr, qty]) => {
     const item = MENU.find(i => i.id === parseInt(idStr));
     if (!item) return;
-
-    const price = (opt === '0.5kg' && item.priceHalf) ? item.priceHalf : item.price;
-    
-    // Label de la opción seleccionada
-    let optionLabel = '';
-    if (item.unitType === 'peso') {
-      optionLabel = opt === '0.5kg' ? ' x ½ Kg' : ' x 1 Kg';
-    } else {
-      let unitSuffix = 'Unidad';
-      if (item.cat === 'almacen-huevos' && item.id === 45) unitSuffix = 'Docena';
-      if (item.cat === 'almacen-huevos' && item.id === 46) unitSuffix = 'Bandeja';
-      optionLabel = ` (${unitSuffix})`;
-    }
 
     rows += `
       <div class="cart-row">
@@ -640,130 +436,105 @@ function renderCartPanel() {
           ${item.img ? `<img src="${item.img}" alt="${item.name}">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px">${item.emoji}</div>`}
         </div>
         <div class="cart-row-info">
-          <div class="cart-row-name">${item.name}${optionLabel}</div>
-          <div class="cart-row-price">${formatPrice(price * qty)}</div>
+          <div class="cart-row-name">${item.name}</div>
+          <div class="cart-row-price">${formatPrice(item.price * qty)}</div>
         </div>
         <div class="cart-row-controls">
-          <button class="qty-btn" onclick="changeQtyByKey('${key}',-1)">−</button>
+          <button class="qty-btn" onclick="changeQtyByKey('${item.id}',-1)">−</button>
           <div class="qty-num">${qty}</div>
-          <button class="qty-btn" onclick="changeQtyByKey('${key}',1)">+</button>
+          <button class="qty-btn" onclick="changeQtyByKey('${item.id}',1)">+</button>
         </div>
       </div>`;
   });
   rows += '</div>';
 
-  const isFreeShipping = total >= 12000;
-  const envio = (deliveryMode === 'delivery' && !isFreeShipping) ? 1000 : 0;
-  rows += `<div class="cart-subtotal"><span>Subtotal Productos</span><span>${formatPrice(total)}</span></div>`;
-  rows += `<div class="cart-subtotal">
-    <span>Envío ${deliveryMode === 'delivery' ? '🛵 (Barrio Norte)' : '🏃 Gratis (retiro local)'}</span>
-    <span>${envio ? formatPrice(envio) : (deliveryMode === 'delivery' && isFreeShipping) ? '¡Gratis! 🎉' : '$0'}</span>
-  </div>`;
-  rows += `<div class="cart-total"><span>Total Final</span><span>${formatPrice(total + envio)}</span></div>`;
-  rows += '<div style="height:10px"></div>';
+  rows += `<div class="cart-subtotal" style="margin-top:20px"><span>Subtotal Gastronomía</span><span>${formatPrice(total)}</span></div>`;
+  rows += `<div class="cart-subtotal"><span>Cargo de Servicio</span><span>Gratis (Huésped)</span></div>`;
+  rows += `<div class="cart-total"><span>Total Final</span><span>${formatPrice(total)}</span></div>`;
+  rows += '<div style="height:15px"></div>';
 
-  content.innerHTML = rows;
-  form.style.display = 'block';
-  document.getElementById('addressSection').style.display = deliveryMode === 'delivery' ? 'block' : 'none';
-
-  // Actualizar los widgets interactivos de la cabecera del carrito
-  updateFreeShippingTracker(total);
-  checkKiloOptimizer();
+  if (content) content.innerHTML = rows;
+  if (form) form.style.display = 'block';
 }
 
-// ─── DELIVERY MODE ────────────────────────────────────────────────
-function setDelivery(mode) {
-  deliveryMode = mode;
-  document.getElementById('dBtn1').classList.toggle('active', mode === 'delivery');
-  document.getElementById('dBtn2').classList.toggle('active', mode === 'takeaway');
-  renderCartPanel();
-}
-
-// ─── SEND WHATSAPP ORDER ──────────────────────────────────────────
+// ─── ENVÍO DE PEDIDO DE ROOM SERVICE VÍA WHATSAPP ─────────────────
 function sendWhatsApp() {
+  const habitacion = document.getElementById('fHabitacion').value.trim();
   const nombre = document.getElementById('fNombre').value.trim();
+  const apellido = document.getElementById('fApellido').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
   const tel = document.getElementById('fTel').value.trim();
-  const dir = document.getElementById('fDir').value.trim();
   const nota = document.getElementById('fNota').value.trim();
 
-  if (!nombre || !tel) { showToast('⚠️ Completá tu nombre y teléfono'); return; }
-  if (deliveryMode === 'delivery' && !dir) { showToast('⚠️ Ingresá tu dirección de entrega'); return; }
+  // Validación estricta y premium
+  if (!habitacion) { showToast('⚠️ Por favor ingrese su número de habitación'); return; }
+  if (!nombre || !apellido) { showToast('⚠️ Por favor ingrese su Nombre y Apellido'); return; }
+  if (!email) { showToast('⚠️ Por favor ingrese su dirección de correo'); return; }
+  if (!tel) { showToast('⚠️ Por favor ingrese su número celular'); return; }
 
   const { total } = getTotals();
-  const isFreeShipping = total >= 12000;
-  const envio = (deliveryMode === 'delivery' && !isFreeShipping) ? 1000 : 0;
-  const waNumber = '549' + WA_NUMBERS[selectedWaIdx]; // Código país + número
   const orderId = generateOrderId();
 
-  let msg = `🐔 *PEDIDO ${orderId} - Punto 25 Delivery* 🐔\n\n`;
-  msg += `👤 *Cliente:* ${nombre}\n`;
-  msg += `📞 *Teléfono:* ${tel}\n`;
-  msg += deliveryMode === 'delivery'
-    ? `📍 *Dirección de Entrega:* ${dir}\n`
-    : `🏃 *Modalidad:* Retiro en local (Corrientes 664)\n`;
-  msg += `\n🛒 *Detalle del Pedido:*\n`;
+  // Armado premium del mensaje de Room Service
+  let msg = `🛎️ *SOLICITUD DE ROOM SERVICE* 🛎️\n`;
+  msg += `*Hostería Municipal Atahualpa Yupanqui*\n`;
+  msg += `───────────────────────────\n\n`;
+  msg += `🚪 *Habitación:* ${habitacion.toUpperCase()}\n`;
+  msg += `👤 *Huésped:* ${nombre} ${apellido}\n`;
+  msg += `📞 *Celular:* ${tel}\n`;
+  msg += `📧 *Email:* ${email}\n\n`;
+  
+  msg += `🛒 *Detalle de la Orden (${orderId}):*\n`;
 
-  Object.entries(cart).forEach(([key, qty]) => {
-    const [idStr, opt] = key.split('-');
+  Object.entries(cart).forEach(([idStr, qty]) => {
     const item = MENU.find(i => i.id === parseInt(idStr));
     if (item) {
-      const price = (opt === '0.5kg' && item.priceHalf) ? item.priceHalf : item.price;
-      
-      let optLabel = '';
-      if (item.unitType === 'peso') {
-        optLabel = opt === '0.5kg' ? ' (½ Kg)' : ' (1 Kg)';
-      } else {
-        let suffix = 'Unidad';
-        if (item.cat === 'almacen-huevos' && item.id === 45) suffix = 'Docena';
-        if (item.cat === 'almacen-huevos' && item.id === 46) suffix = 'Bandeja';
-        optLabel = ` (${suffix})`;
-      }
-
-      msg += `  • ${qty}x ${item.emoji} ${item.name}${optLabel} — ${formatPrice(price * qty)}\n`;
+      msg += `  • ${qty}x ${item.emoji} _${item.name}_ — ${formatPrice(item.price * qty)}\n`;
     }
   });
 
-  if (deliveryMode === 'delivery') {
-    msg += `\n🛵 *Envío:* ${envio ? formatPrice(envio) : '¡Gratis! 🎉'}\n`;
-  }
-  msg += `💰 *TOTAL FINAL: ${formatPrice(total + envio)}*\n`;
+  msg += `\n💵 *TOTAL FINAL A ABONAR: ${formatPrice(total)}*\n`;
+  msg += `_(Se cargará directamente a su cuenta de habitación)_\n`;
   
   if (nota) {
-    msg += `\n📝 *Aclaraciones:* ${nota}\n`;
+    msg += `\n📝 *Indicaciones Especiales:* ${nota}\n`;
   }
   
-  msg += `\n📍 _Enviado desde el catálogo web de Punto 25_`;
+  msg += `\n🛎️ _Pedido realizado desde el portal digital de Room Service_`;
 
-  // Guardar datos del cliente de forma permanente
+  // Guardar datos en el navegador para agilizar futuras órdenes del huésped
   saveClientData();
   saveLastOrder();
 
-  window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-  showToast(`📲 Pedido ${orderId} redirigiendo...`);
+  // Redirección
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  showToast(`📲 Redirigiendo a Room Service de Hostería...`);
   
-  // Refrescar el historial de pedidos anteriores
+  // Actualizar historial
   setTimeout(checkLastOrderHistory, 1000);
 }
 
-// ─── TOAST NOTIFICATION ──────────────────────────────────────────
+// ─── TOAST NOTIFICATION PREMIUM ────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ─── FLAGGING PARTICLES (Micro-animations) ──────────────────────
+// ─── ANIMACIÓN DE PARTICULAS (Micro-animations) ─────────────────────
 function spawnParticle(id) {
-  const el = document.getElementById('mi-' + id);
-  if (!el) return;
-  const rect = el.getBoundingClientRect();
+  const ctrl = document.getElementById('ctrl-' + id);
+  if (!ctrl) return;
+  
+  const rect = ctrl.getBoundingClientRect();
   const p = document.createElement('div');
   p.className = 'particle';
   
   const item = MENU.find(i => i.id === id);
-  p.textContent = item ? item.emoji : '🍗';
+  p.textContent = item ? item.emoji : '🛎️';
   
   p.style.left = (rect.left + rect.width / 2 - 12) + 'px';
   p.style.top = (rect.top + window.scrollY) + 'px';
@@ -771,20 +542,7 @@ function spawnParticle(id) {
   setTimeout(() => p.remove(), 800);
 }
 
-// ─── PROMOTIONS AUTOMATION ────────────────────────────────────────
-function initPromoDots() {
-  const promoScroll = document.getElementById('promoScroll');
-  if (promoScroll) {
-    promoScroll.addEventListener('scroll', () => {
-      const idx = Math.round(promoScroll.scrollLeft / promoScroll.offsetWidth);
-      document.querySelectorAll('.promo-dots .dot').forEach((d, i) => {
-        d.classList.toggle('active', i === idx);
-      });
-    });
-  }
-}
-
-// ─── SCROLL INTERSECTION OBSERVERS ────────────────────────────────
+// ─── OBSERVERS DE INTERSECCIÓN (FADE-IN AL HACER SCROLL) ───────────
 function initScrollObserver() {
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -793,23 +551,42 @@ function initScrollObserver() {
         observer.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08 });
 
   document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────
+// ─── INICIALIZACIÓN ────────────────────────────────────────────────
 function init() {
+  // Animación del Splash Screen
+  const splash = document.getElementById('splash');
+  if (splash) {
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+    }, 2200); // 2.2 segundos para una entrada cinematográfica
+  }
+
+  // Inicializar componentes
   renderMenu(MENU);
-  initPromoDots();
+  initHeroCarousel();
   initScrollObserver();
   loadClientData();
   checkLastOrderHistory();
   checkStoreSchedule();
   
-  // Chequeo automático de horario cada 30 segundos
+  // Enlazar eventos de entrada de la billetera en tiempo real (Suite Card)
+  const inputsToBind = ['fHabitacion', 'fNombre', 'fApellido'];
+  inputsToBind.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener('input', updateWalletDisplay);
+      input.addEventListener('keyup', updateWalletDisplay);
+    }
+  });
+
+  // Verificar horario de cocina cada 30 segundos
   setInterval(checkStoreSchedule, 30000);
 }
 
-// Iniciar aplicación
-init();
+// Iniciar aplicación al cargar
+window.addEventListener('DOMContentLoaded', init);
