@@ -192,6 +192,36 @@
     </div>
   </div>
 
+  <!-- MODAL INFORMATIVO DE DETALLE DE PLATO (GOURMET DETAIL MODAL) -->
+  <div class="product-modal-overlay" id="productModalOverlay" onclick="closeProductModal()"></div>
+  <div class="product-modal" id="productModal">
+    <button class="pm-close-btn" onclick="closeProductModal()">✕</button>
+    <div class="pm-image-wrap" id="pmImageWrap"></div>
+    <div class="pm-content-wrap">
+      <div class="pm-header">
+        <span class="pm-category" id="pmCategory">CATEGORÍA</span>
+        <h2 class="pm-title" id="pmTitle">Nombre del Plato</h2>
+      </div>
+      <div class="pm-rating-row">
+        <span class="pm-stars">★★★★★</span>
+        <span class="pm-rating-value">5.0</span>
+      </div>
+      <p class="pm-desc" id="pmDesc">Descripción completa del plato...</p>
+      
+      <div class="pm-info-section" id="pmIngredientsSection">
+        <span class="pm-section-title">🌿 Ingredientes Selección</span>
+        <p class="pm-ingredients" id="pmIngredients">Ingredientes...</p>
+      </div>
+      
+      <div class="pm-price-row">
+        <span class="pm-price-label">Precio Unitario</span>
+        <span class="pm-price-value" id="pmPrice">$--</span>
+      </div>
+      
+      <button class="pm-back-btn" onclick="closeProductModal()">Volver a la Carta 🛎️</button>
+    </div>
+  </div>
+
   <!-- NOTIFICACIÓN TIPO TOAST PREMIUM -->
   <div class="toast" id="toast"></div>
 

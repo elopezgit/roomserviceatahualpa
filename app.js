@@ -240,7 +240,7 @@ function renderMenu(items) {
       : '';
 
     list.innerHTML += `
-      <div class="menu-item ${inCart ? 'in-cart' : ''}" id="mi-${item.id}">
+      <div class="menu-item ${inCart ? 'in-cart' : ''}" id="mi-${item.id}" onclick="openProductModal(${item.id})">
         <div class="item-photo">
           ${photoHTML(item.img, item.emoji, item.name)}
         </div>
@@ -586,6 +586,88 @@ function init() {
 
   // Verificar horario de cocina cada 30 segundos
   setInterval(checkStoreSchedule, 30000);
+}
+
+// ─── MODAL INFORMATIVO DE DETALLE DE PLATOS ────────────────────────
+function openProductModal(id) {
+  const item = MENU.find(i => i.id === id);
+  if (!item) return;
+
+  const overlay = document.getElementById('productModalOverlay');
+  const modal = document.getElementById('productModal');
+
+  // Obtener elementos del DOM del modal
+  const imgWrap = document.getElementById('pmImageWrap');
+  const title = document.getElementById('pmTitle');
+  const category = document.getElementById('pmCategory');
+  const desc = document.getElementById('pmDesc');
+  const price = document.getElementById('pmPrice');
+  const ingredients = document.getElementById('pmIngredients');
+  const ingredientsSec = document.getElementById('pmIngredientsSection');
+  const ratingValue = document.querySelector('.pm-rating-value');
+  const stars = document.querySelector('.pm-stars');
+
+  // Renderizar contenido dinámico
+  if (imgWrap) {
+    imgWrap.innerHTML = item.img 
+      ? `<img src="${item.img}" alt="${item.name}">` 
+      : `<div class="pm-photo-fallback">${item.emoji}</div>`;
+  }
+  if (title) title.textContent = item.name;
+  
+  if (category) {
+    const catNames = {
+      desayunos: 'Desayunos de la Yunga',
+      cafeteria: 'Cafetería de Especialidad',
+      regionales: 'Platos Regionales Tucumanos',
+      carnes: 'Carnes Premium',
+      pastas: 'Pastas Caseras',
+      minutas: 'Sándwiches & Minutas Deluxe',
+      snacks: 'Tablas & Snacks Exclusivos',
+      postres: 'Postres Artesanales',
+      bebidas: 'Bebidas y Jugos Naturales',
+      tragos: 'Tragos de Autor y Vinos'
+    };
+    category.textContent = catNames[item.cat] || 'Gourmet';
+  }
+  
+  if (desc) desc.textContent = item.desc;
+  if (price) price.textContent = formatPrice(item.price);
+  
+  if (ingredients && item.ingredients) {
+    ingredients.textContent = item.ingredients;
+    if (ingredientsSec) ingredientsSec.style.display = 'block';
+  } else {
+    if (ingredientsSec) ingredientsSec.style.display = 'none';
+  }
+
+  if (ratingValue) ratingValue.textContent = item.rating ? item.rating.toFixed(1) : '5.0';
+  if (stars) {
+    const score = item.rating || 5.0;
+    let starStr = '';
+    for (let i = 1; i <= 5; i++) {
+      starStr += i <= Math.round(score) ? '★' : '☆';
+    }
+    stars.textContent = starStr;
+  }
+
+  // Desplegar modal
+  if (overlay && modal) {
+    overlay.classList.add('open');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeProductModal() {
+  const overlay = document.getElementById('productModalOverlay');
+  const modal = document.getElementById('productModal');
+
+  if (overlay && modal) {
+    overlay.classList.remove('open');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 }
 
 // Iniciar aplicación al cargar
